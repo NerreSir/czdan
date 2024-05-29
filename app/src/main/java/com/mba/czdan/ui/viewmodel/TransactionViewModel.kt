@@ -2,8 +2,8 @@ package com.mba.czdan.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mba.czdan.data.dao.TransactionDao
-import com.mba.czdan.data.model.Transaction
+import com.mba.czdan.data.model.TransactionEntity
+import com.mba.czdan.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,15 +12,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TransactionViewModel @Inject constructor(
-    private val transactionDao: TransactionDao
+    private val transactionRepository: TransactionRepository
 ) : ViewModel() {
 
-    private val _transactions = MutableStateFlow<List<Transaction>>(emptyList())
-    val transactions: StateFlow<List<Transaction>> = _transactions
+    private val _transactions = MutableStateFlow<List<TransactionEntity>>(emptyList())
+    val transactions: StateFlow<List<TransactionEntity>> = _transactions
 
     fun saveTransaction(description: String) {
         viewModelScope.launch {
-            transactionDao.insert(Transaction(description = description))
+            transactionRepository.insertTransactions(TransactionEntity(description = description))
             loadTransactions()
         }
     }
@@ -31,7 +31,7 @@ class TransactionViewModel @Inject constructor(
 
     private fun loadTransactions() {
         viewModelScope.launch {
-            _transactions.value = transactionDao.getAllTransactions()
+            _transactions.value = transactionRepository.getTransactions()
         }
     }
 }

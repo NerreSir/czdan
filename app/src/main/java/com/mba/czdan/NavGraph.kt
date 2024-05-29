@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.mba.czdan.ui.components.BottomNavItem
-import com.mba.czdan.ui.screen.HomeScreen
+import com.mba.czdan.ui.screens.HomeScreen
 import com.mba.czdan.ui.screens.CalendarScreen
 import com.mba.czdan.ui.screens.FlowScreen
 import com.mba.czdan.ui.screens.ProfileScreen
