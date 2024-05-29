@@ -1,4 +1,4 @@
-package com.mba.czdan.ui
+package com.mba.czdan
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

@@ -4,18 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.mba.czdan.ui.NavGraph
 import com.mba.czdan.ui.components.BottomNavItem
 import com.mba.czdan.ui.components.BottomNavigationBar
+import com.mba.czdan.ui.components.CustomScaffold
 import com.mba.czdan.ui.components.CustomTopAppBar
 import com.mba.czdan.ui.theme.CzdanTheme
 
@@ -30,7 +28,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
@@ -47,7 +44,7 @@ fun MainScreen() {
         }
     }
 
-    Scaffold(
+    CustomScaffold(
         topBar = {
             CustomTopAppBar(title = currentPageTitle)
         },
