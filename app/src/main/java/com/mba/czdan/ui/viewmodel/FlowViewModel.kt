@@ -1,4 +1,4 @@
-package com.mba.czdan.viewmodel
+package com.mba.czdan.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

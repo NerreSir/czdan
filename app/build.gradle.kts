@@ -1,7 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt") // Eğer KAPT kullanıyorsanız
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 val composeVersion = "1.4.1"
@@ -11,7 +12,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.mba.czdan"  // Güncelleme
+        applicationId = "com.mba.czdan"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
@@ -44,7 +45,7 @@ android {
         compose = true
     }
 
-    namespace = "com.mba.czdan"  // Güncelleme
+    namespace = "com.mba.czdan"
 }
 
 dependencies {
@@ -63,6 +64,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation(libs.androidx.ui.graphics.android)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
     kapt("com.google.dagger:hilt-compiler:2.42")
     implementation("com.google.dagger:hilt-android:2.42")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
@@ -70,4 +73,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("androidx.room:room-ktx:2.4.2")
+    kapt("androidx.room:room-compiler:2.4.2")
 }

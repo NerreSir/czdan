@@ -16,7 +16,9 @@ import com.mba.czdan.ui.components.BottomNavigationBar
 import com.mba.czdan.ui.components.CustomScaffold
 import com.mba.czdan.ui.components.CustomTopAppBar
 import com.mba.czdan.ui.theme.CzdanTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
