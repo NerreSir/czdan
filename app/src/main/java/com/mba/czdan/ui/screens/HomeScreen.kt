@@ -15,6 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,6 +28,7 @@ fun HomeScreen(
     transactionViewModel: TransactionViewModel = hiltViewModel()
 ) {
     val transactions by transactionViewModel.transactions.collectAsState(initial = emptyList())
+    var showTransactions by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -32,29 +36,36 @@ fun HomeScreen(
             .padding(16.dp)
     ) {
         Button(
-            onClick = { transactionViewModel.loadTransactions() },
+            onClick = {
+                showTransactions = !showTransactions
+                if (showTransactions) {
+                    transactionViewModel.loadTransactions()
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Load Transactions")
+            Text(if (showTransactions) "Hide Transactions" else "Load Transactions")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        LazyColumn {
-            items(transactions) { transaction ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Name: ${transaction.name}", style = MaterialTheme.typography.bodyLarge)
-                        Text(
-                            "Amount: ${transaction.amount}",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Text("Date: ${transaction.date}", style = MaterialTheme.typography.bodyLarge)
+        if (showTransactions) {
+            LazyColumn {
+                items(transactions) { transaction ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text("Name: ${transaction.name}", style = MaterialTheme.typography.bodyLarge)
+                            Text(
+                                "Amount: ${transaction.amount}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text("Date: ${transaction.date}", style = MaterialTheme.typography.bodyLarge)
+                        }
                     }
+                    Spacer(modifier = Modifier.padding(4.dp))
                 }
-                Spacer(modifier = Modifier.padding(4.dp))
             }
         }
     }

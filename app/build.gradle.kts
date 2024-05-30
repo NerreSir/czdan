@@ -31,6 +31,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        encoding = "UTF-8"
     }
 
     kotlinOptions {
@@ -65,8 +66,6 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.4.1")
     implementation("androidx.compose.foundation:foundation:1.4.1")
     implementation("androidx.compose.foundation:foundation-layout:1.4.1")
-    implementation(libs.androidx.foundation.android)
-    implementation(libs.androidx.foundation.android)
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
@@ -81,4 +80,6 @@ dependencies {
     kapt ("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.room:room-runtime:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")
+    // DatePicker
+    implementation("androidx.compose.material3:material3:1.0.0-alpha01")
 }

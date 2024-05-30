@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +27,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mba.czdan.ui.viewmodel.TransactionViewModel
+import java.util.Calendar
 
 @Composable
 fun TransactionScreen(
@@ -33,12 +38,17 @@ fun TransactionScreen(
     var date by remember { mutableStateOf("") }
     val context = LocalContext.current
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    var showError by remember { mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
             label = { Text("Name") },
-            isError = name.isEmpty(),
+            isError = showError && name.isEmpty(),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -51,7 +61,7 @@ fun TransactionScreen(
             },
             label = { Text("Amount") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            isError = amount.text.isEmpty(),
+            isError = showError && amount.text.isEmpty(),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -59,14 +69,21 @@ fun TransactionScreen(
             value = date,
             onValueChange = { date = it },
             label = { Text("Date") },
-            isError = date.isEmpty(),
-            modifier = Modifier.fillMaxWidth()
+            readOnly = true,
+            isError = showError && date.isEmpty(),
+            modifier = Modifier.fillMaxWidth(),
+            trailingIcon = {
+                IconButton(onClick = { showDatePicker = true }) {
+                    Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+                }
+            }
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
+                showError = name.isEmpty() || amount.text.isEmpty() || date.isEmpty()
                 val amountDouble = amount.text.toDoubleOrNull()
-                if (name.isNotEmpty() && amount.text.isNotEmpty() && date.isNotEmpty() && amountDouble != null) {
+                if (!showError && amountDouble != null) {
                     transactionViewModel.addTransaction(name, amountDouble, date)
                     // Girdileri temizle
                     name = ""
@@ -81,4 +98,35 @@ fun TransactionScreen(
             Text("Save Transaction")
         }
     }
+
+    if (showDatePicker) {
+        ShowDatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            onDateChange = { selectedDate ->
+                date = selectedDate
+                showDatePicker = false
+            }
+        )
+    }
+}
+
+@Composable
+fun ShowDatePickerDialog(
+    onDismissRequest: () -> Unit,
+    onDateChange: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    android.app.DatePickerDialog(
+        context,
+        { _, year, monthOfYear, dayOfMonth ->
+            onDateChange("$dayOfMonth/${monthOfYear + 1}/$year")
+        },
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.DAY_OF_MONTH)
+    ).apply {
+        setOnDismissListener { onDismissRequest() }
+    }.show()
 }
