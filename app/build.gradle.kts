@@ -62,22 +62,23 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-rxjava2:$composeVersion")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.25.1")
     implementation("androidx.navigation:navigation-compose:2.5.3")
-    implementation(libs.androidx.ui.graphics.android)
+    implementation("androidx.compose.ui:ui:1.4.1")
+    implementation("androidx.compose.foundation:foundation:1.4.1")
+    implementation("androidx.compose.foundation:foundation-layout:1.4.1")
+    implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.foundation.android)
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
     //DAGGER HİLT
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("com.google.dagger:hilt-compiler:2.44")
     implementation("com.google.dagger:hilt-android:2.44")
-
     //ROOM
     kapt ("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.room:room-runtime:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")
-
 }

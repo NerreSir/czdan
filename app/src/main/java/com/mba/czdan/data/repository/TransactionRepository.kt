@@ -1,8 +1,9 @@
 package com.mba.czdan.data.repository
 
 import com.mba.czdan.data.model.TransactionEntity
+import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {
-    suspend fun getTransactions(): List<TransactionEntity>
-    suspend fun insertTransactions(transactions: TransactionEntity)
+    suspend fun insertTransaction(transaction: TransactionEntity)
+    fun getAllTransactions(): Flow<List<TransactionEntity>>
 }

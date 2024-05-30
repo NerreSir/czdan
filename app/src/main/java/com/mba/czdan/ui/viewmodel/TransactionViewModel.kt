@@ -7,6 +7,7 @@ import com.mba.czdan.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,22 +17,21 @@ class TransactionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _transactions = MutableStateFlow<List<TransactionEntity>>(emptyList())
-    val transactions: StateFlow<List<TransactionEntity>> = _transactions
+    val transactions: StateFlow<List<TransactionEntity>> = _transactions.asStateFlow()
 
-    fun saveTransaction(description: String) {
+    fun addTransaction(name: String, amount: Double, date: String) {
+        val newTransaction = TransactionEntity(name = name, amount = amount, date = date)
         viewModelScope.launch {
-            transactionRepository.insertTransactions(TransactionEntity(description = description))
+            transactionRepository.insertTransaction(newTransaction)
             loadTransactions()
         }
     }
 
-    init {
-        loadTransactions()
-    }
-
-    private fun loadTransactions() {
+    fun loadTransactions() {
         viewModelScope.launch {
-            _transactions.value = transactionRepository.getTransactions()
+            transactionRepository.getAllTransactions().collect { transactionsList ->
+                _transactions.value = transactionsList
+            }
         }
     }
 }
