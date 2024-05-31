@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.mba.czdan"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -24,7 +24,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -77,9 +80,16 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.44")
     implementation("com.google.dagger:hilt-android:2.44")
     //ROOM
-    kapt ("androidx.room:room-compiler:2.6.1")
-    implementation ("androidx.room:room-runtime:2.6.1")
-    implementation ("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
     // DatePicker
     implementation("androidx.compose.material3:material3:1.0.0-alpha01")
+    //TABLAR ARASI KAYDIRARAK GEÇİŞ SAĞLAMA
+    implementation("com.google.accompanist:accompanist-pager:0.26.1-alpha")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.26.1-alpha")
+    implementation ("androidx.compose.material3:material3:1.1.0-beta01")
+    implementation ("androidx.compose.material:material:1.4.1")
+
+
 }

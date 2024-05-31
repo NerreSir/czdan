@@ -53,7 +53,7 @@ fun MainScreen() {
         bottomBar = {
             BottomNavigationBar(navController = navController)
         },
-        floatingActionButton = {},
+        floatingActionButton = { },
         floatingActionButtonPosition = FabPosition.Center
     ) { paddingValues ->
         NavGraph(navController = navController, modifier = Modifier.padding(paddingValues))
