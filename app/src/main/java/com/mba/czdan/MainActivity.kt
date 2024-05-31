@@ -42,7 +42,7 @@ fun MainScreen() {
             BottomNavItem.Calendar.route -> BottomNavItem.Calendar.title
             BottomNavItem.Flow.route -> BottomNavItem.Flow.title
             BottomNavItem.Profile.route -> BottomNavItem.Profile.title
-            else -> "Uygulama"
+            else -> ""
         }
     }
 

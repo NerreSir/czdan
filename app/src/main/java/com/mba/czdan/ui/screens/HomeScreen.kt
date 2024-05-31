@@ -1,5 +1,6 @@
 package com.mba.czdan.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,13 +25,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.mba.czdan.ui.viewmodel.TransactionViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    transactionViewModel: TransactionViewModel = hiltViewModel()
+    navHostController: NavHostController, transactionViewModel: TransactionViewModel = hiltViewModel()
 ) {
     val transactions by transactionViewModel.transactions.collectAsState(initial = emptyList())
     var showTransactions by remember { mutableStateOf(false) }
@@ -49,7 +51,10 @@ fun HomeScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 4.dp),
+                            .padding(vertical = 4.dp)
+                            .clickable {
+                                navHostController.navigate("transactionUpdate/${transaction.id}")
+                            },
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
@@ -80,10 +85,10 @@ fun HomeScreen(
             OutlinedButton(
                 onClick = {
                     showTransactions = !showTransactions
-                        transactionViewModel.loadTransactions()
-                        scope.launch {
-                            bottomSheetState.bottomSheetState.expand()
-                        }
+                    transactionViewModel.loadTransactions()
+                    scope.launch {
+                        bottomSheetState.bottomSheetState.expand()
+                    }
 
                 },
                 modifier = Modifier.fillMaxWidth()

@@ -29,7 +29,7 @@ class TransactionViewModel @Inject constructor(
 
     fun loadTransactions() {
         viewModelScope.launch {
-            transactionRepository.getAllTransactions().collect { transactionsList ->
+            transactionRepository.getAllTransactions().let { transactionsList ->
                 _transactions.value = transactionsList
             }
         }

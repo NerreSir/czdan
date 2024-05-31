@@ -90,6 +90,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:0.26.1-alpha")
     implementation ("androidx.compose.material3:material3:1.1.0-beta01")
     implementation ("androidx.compose.material:material:1.4.1")
-
-
+    //JSON CONVERTER
+    implementation("org.jsoup:jsoup:1.14.3")
 }

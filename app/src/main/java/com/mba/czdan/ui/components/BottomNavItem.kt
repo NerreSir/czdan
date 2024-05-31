@@ -14,4 +14,5 @@ sealed class BottomNavItem(val title: String, val icon: ImageVector, val route: 
     object Flow : BottomNavItem("Flow", Icons.Default.ShowChart, "flow")
     object Transaction : BottomNavItem("Ekle/Kaldır", Icons.Default.ShoppingCart, "transaction")
     object Profile : BottomNavItem("Profil", Icons.Default.Person, "profile")
+    object TransactionUpdateScreen : BottomNavItem("Transaction Update", Icons.Default.Person, "transactionUpdate")
 }

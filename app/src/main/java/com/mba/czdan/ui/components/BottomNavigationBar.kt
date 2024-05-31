@@ -17,7 +17,8 @@ fun BottomNavigationBar(navController: NavHostController) {
         BottomNavItem.Flow,
         BottomNavItem.Home,
         BottomNavItem.Transaction,
-        BottomNavItem.Profile
+        BottomNavItem.Profile,
+        BottomNavItem.TransactionUpdateScreen
     )
 
     NavigationBar(
@@ -26,22 +27,34 @@ fun BottomNavigationBar(navController: NavHostController) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         items.forEach { item ->
-            NavigationBarItem(
-                icon = { Icon(imageVector = item.icon, contentDescription = item.title) },
-                label = { Text(text = item.title) },
-                selected = currentRoute == item.route,
-                onClick = {
-                    navController.navigate(item.route) {
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                saveState = true
+            when (item) {
+                is BottomNavItem.Calendar,
+                BottomNavItem.Flow,
+                BottomNavItem.Home,
+                BottomNavItem.Transaction,
+                BottomNavItem.Profile,
+                -> {
+                    NavigationBarItem(
+                        icon = { Icon(imageVector = item.icon, contentDescription = item.title) },
+                        label = { Text(text = item.title) },
+                        selected = currentRoute == item.route,
+                        onClick = {
+                            navController.navigate(item.route) {
+                                navController.graph.startDestinationRoute?.let { route ->
+                                    popUpTo(route) {
+                                        saveState = true
+                                    }
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
                         }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    )
                 }
-            )
+
+                else -> {}
+            }
+
         }
     }
 }

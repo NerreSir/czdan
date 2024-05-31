@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mba.czdan.data.model.TransactionEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TransactionDao {
@@ -13,5 +12,13 @@ interface TransactionDao {
     suspend fun insertTransaction(transaction: TransactionEntity)
 
     @Query("SELECT * FROM transactions")
-    fun getAllTransactions(): Flow<List<TransactionEntity>>
+    suspend fun getAllTransactions(): List<TransactionEntity>
+
+
+    @Query("SELECT * FROM transactions WHERE id = :transactionId")
+    suspend fun getTransactionById(transactionId: Int): TransactionEntity
+
+    @Query("UPDATE transactions SET name = :userName,amount = :amount,date = :date WHERE id = :id")
+    suspend fun getUpdateTransactionById(userName: String,amount:Double,date:String,id:Int)
+
 }

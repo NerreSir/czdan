@@ -2,8 +2,8 @@ package com.mba.czdan.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mba.czdan.data.repository.TransactionRepository
 import com.mba.czdan.data.model.TransactionEntity
+import com.mba.czdan.data.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
 
     fun fetchAllTransactions() {
         viewModelScope.launch {
-            repository.getAllTransactions().collect { transactions ->
+            repository.getAllTransactions()?.let { transactions ->
                 _allTransactions.value = transactions
             }
         }
