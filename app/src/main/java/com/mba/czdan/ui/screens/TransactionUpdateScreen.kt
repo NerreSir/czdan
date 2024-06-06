@@ -15,7 +15,9 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,7 +59,6 @@ fun TransactionUpdateScreen(
         var name by remember { mutableStateOf(transactionName ?: "") }
         var amount by remember { mutableStateOf(transactionAmount?.toString() ?: "") }
         var date by remember { mutableStateOf(transactionDate ?: "Please Click Icon") }
-
 
         Column(
             modifier = Modifier
@@ -123,7 +124,12 @@ fun TransactionUpdateScreen(
                         showError = name.isEmpty() || amount.isEmpty() || date == "Select Date"
                         val amountDouble = amount.toDoubleOrNull()
                         if (!showError && amountDouble != null) {
-                            transactionUpdateViewModel.updateTransaction(name, amount.toDouble(), date,transactionEntity)
+                            transactionUpdateViewModel.updateTransaction(
+                                name,
+                                amount.toDouble(),
+                                date,
+                                transactionEntity
+                            )
                             name = ""
                             amount = ""
                             date = "Select Date"
@@ -134,10 +140,21 @@ fun TransactionUpdateScreen(
                             ).show()
                         }
                         navController.navigate("home")
-                              },
+                    },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Update Transaction")
+                }
+                Button(
+                    onClick = {
+                        navController.popBackStack()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Cancel")
                 }
             }
         }
@@ -151,8 +168,6 @@ fun TransactionUpdateScreen(
             )
         }
     }
-
-
 }
 
 @Composable

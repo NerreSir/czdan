@@ -41,6 +41,7 @@ fun HomeScreen(
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetState,
+        sheetContainerColor = MaterialTheme.colorScheme.onPrimary,
         sheetContent = {
             LazyColumn(
                 modifier = Modifier

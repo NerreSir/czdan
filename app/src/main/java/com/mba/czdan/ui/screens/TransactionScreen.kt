@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mba.czdan.ui.theme.topBarGradient
 import com.mba.czdan.ui.viewmodel.TransactionViewModel
 import java.util.Calendar
 
@@ -47,7 +47,7 @@ fun TransactionScreen(
     Column {
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.8f))
+                .background(topBarGradient)
                 .fillMaxWidth()
         ) {
             CustomTabs(
@@ -65,16 +65,16 @@ fun TransactionScreen(
                 .fillMaxWidth()
         ) {
             if (selectedTab == 0) {
-                IncomeEntryScreen(transactionViewModel)
+                IncomeEntryScreen(transactionViewModel, true)
             } else {
-                ExpenseEntryScreen()
+                ExpenseEntryScreen(transactionViewModel, false)
             }
         }
     }
 }
 
 @Composable
-fun IncomeEntryScreen(transactionViewModel: TransactionViewModel) {
+fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, b: Boolean) {
     var name by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var date by remember { mutableStateOf("Please Click Icon") }
@@ -126,7 +126,7 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel) {
                 onValueChange = {},
                 label = { Text("Date") },
                 readOnly = true,
-                isError = showError && date == "Select Date",
+                isError = showError && date == "Please Click Icon",
                 modifier = Modifier
                     .fillMaxWidth(),
                 trailingIcon = {
@@ -142,13 +142,14 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel) {
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
-                    showError = name.isEmpty() || amount.text.isEmpty() || date == "Select Date"
+                    showError =
+                        name.isEmpty() || amount.text.isEmpty() || date == "Please Click Icon"
                     val amountDouble = amount.text.toDoubleOrNull()
                     if (!showError && amountDouble != null) {
-                        transactionViewModel.addTransaction(name, amountDouble, date)
+                        transactionViewModel.addTransaction(name, amountDouble, date,b)
                         name = ""
                         amount = TextFieldValue("")
-                        date = "Select Date"
+                        date = "Please Click Icon"
                         Toast.makeText(
                             context,
                             "İşleminiz başarıyla gerçekleşmiştir",
@@ -175,7 +176,7 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel) {
 }
 
 @Composable
-fun ExpenseEntryScreen() {
+fun ExpenseEntryScreen(transactionViewModel: TransactionViewModel, b: Boolean) {
     Column {
         Column {
             Text(text = "Gider Ekle")

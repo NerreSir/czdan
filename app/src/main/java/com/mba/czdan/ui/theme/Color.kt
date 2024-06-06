@@ -1,7 +1,11 @@
 package com.mba.czdan.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
+val topBarGradient = Brush.horizontalGradient(
+    colors = listOf(Color(0xFF9575CD), Color(0xFF5E35B1))
+)
 val LightBlue = Color(0xFF81D4FA)
 val MediumBlue = Color(0xFF29B6F6)
 val DarkBlue = Color(0xFF0288D1)
