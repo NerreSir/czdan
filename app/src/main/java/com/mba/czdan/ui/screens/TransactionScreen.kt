@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -34,6 +36,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mba.czdan.data.model.frequencyList
+import com.mba.czdan.data.model.iconCategoryList
 import com.mba.czdan.ui.theme.topBarGradient
 import com.mba.czdan.ui.viewmodel.TransactionViewModel
 import java.util.Calendar
@@ -74,10 +78,13 @@ fun TransactionScreen(
 }
 
 @Composable
-fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, b: Boolean) {
+fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, inOutComeControl: Boolean) {
     var name by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var date by remember { mutableStateOf("Please Click Icon") }
+    var category by remember { mutableStateOf("") }
+    var frequency by remember { mutableStateOf("") }
+
     val context = LocalContext.current
 
     var showError by remember { mutableStateOf(false) }
@@ -140,13 +147,34 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, b: Boolean) {
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
+            DropdownMenuComponent(
+                label = "Category",
+                items = iconCategoryList.map { it.category },
+                selectedItem = category,
+                onItemSelected = { category = it }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            DropdownMenuComponent(
+                label = "Frequency",
+                items = frequencyList.map { it.category },
+                selectedItem = frequency,
+                onItemSelected = { frequency = it }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
                     showError =
-                        name.isEmpty() || amount.text.isEmpty() || date == "Please Click Icon"
+                        name.isEmpty() || amount.text.isEmpty() || date == "Please Click Icon" || category.isEmpty() || frequency.isEmpty()
                     val amountDouble = amount.text.toDoubleOrNull()
                     if (!showError && amountDouble != null) {
-                        transactionViewModel.addTransaction(name, amountDouble, date,b)
+                        transactionViewModel.addTransaction(
+                            name,
+                            amountDouble,
+                            date,
+                            category,
+                            frequency,
+                            inOutComeControl
+                        )
                         name = ""
                         amount = TextFieldValue("")
                         date = "Please Click Icon"
@@ -176,7 +204,7 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, b: Boolean) {
 }
 
 @Composable
-fun ExpenseEntryScreen(transactionViewModel: TransactionViewModel, b: Boolean) {
+fun ExpenseEntryScreen(transactionViewModel: TransactionViewModel, inOutComeControl: Boolean) {
     Column {
         Column {
             Text(text = "Gider Ekle")
@@ -208,6 +236,44 @@ fun ShowDatePickerDialog(
         setOnDismissListener { onDismissRequest() }
     }.show()
 }
+
+@Composable
+fun DropdownMenuComponent(
+    label: String,
+    items: List<String>,
+    selectedItem: String,
+    onItemSelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column {
+        Text(text = label)
+        Box {
+            Text(
+                text = selectedItem.ifEmpty { "Select $label" },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = { expanded = true })
+                    .background(Color.Gray)
+                    .padding(8.dp)
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                items.forEach { item ->
+                    DropdownMenuItem(onClick = {
+                        expanded = false
+                        onItemSelected(item)
+                    }) {
+                        Text(text = item)
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun CustomTabs(selectedIndex: Int, tabTitles: List<String>, onTabSelected: (Int) -> Unit) {

@@ -8,5 +8,12 @@ interface TransactionRepository {
 
     suspend fun getTransactionById(id: Int): TransactionEntity?
 
-    suspend fun getUpdateTransactionById(userName: String, amount: Double, date: String, id: Int)
+    suspend fun getUpdateTransactionById(
+        userName: String,
+        amount: Double,
+        date: String,
+        category: String,
+        frequency: String,
+        id: Int
+    )
 }

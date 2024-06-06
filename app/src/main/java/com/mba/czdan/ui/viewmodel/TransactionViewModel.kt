@@ -19,11 +19,20 @@ class TransactionViewModel @Inject constructor(
     private val _transactions = MutableStateFlow<List<TransactionEntity>>(emptyList())
     val transactions: StateFlow<List<TransactionEntity>> = _transactions.asStateFlow()
 
-    fun addTransaction(name: String, amount: Double, date: String, inOutComeControl: Boolean) {
+    fun addTransaction(
+        name: String,
+        amount: Double,
+        date: String,
+        category: String,
+        frequency: String,
+        inOutComeControl: Boolean
+    ) {
         val newTransaction = TransactionEntity(
             name = name,
             amount = amount,
             date = date,
+            category = category,
+            frequency = frequency,
             inOutComeControl = inOutComeControl
         )
         viewModelScope.launch {

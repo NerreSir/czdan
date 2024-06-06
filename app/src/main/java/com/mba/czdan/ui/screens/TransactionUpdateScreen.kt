@@ -34,6 +34,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.mba.czdan.data.model.frequencyList
+import com.mba.czdan.data.model.iconCategoryList
 import com.mba.czdan.ui.viewmodel.TransactionUpdateViewModel
 import java.util.Calendar
 
@@ -48,6 +50,9 @@ fun TransactionUpdateScreen(
     val transactionName by transactionUpdateViewModel.transactionName.collectAsState()
     val transactionAmount by transactionUpdateViewModel.transactionAmount.collectAsState()
     val transactionDate by transactionUpdateViewModel.transactionDate.collectAsState()
+    val transactionCategory by transactionUpdateViewModel.transactionCategory.collectAsState()
+    val transactionFrequency by transactionUpdateViewModel.transactionFrequency.collectAsState()
+
 
     val context = LocalContext.current
 
@@ -59,6 +64,9 @@ fun TransactionUpdateScreen(
         var name by remember { mutableStateOf(transactionName ?: "") }
         var amount by remember { mutableStateOf(transactionAmount?.toString() ?: "") }
         var date by remember { mutableStateOf(transactionDate ?: "Please Click Icon") }
+        var category by remember { mutableStateOf(transactionCategory ?: "") }
+        var frequency by remember { mutableStateOf(transactionFrequency ?: "") }
+
 
         Column(
             modifier = Modifier
@@ -119,16 +127,33 @@ fun TransactionUpdateScreen(
                     }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+                DropdownMenuComponent(
+                    label = "Category",
+                    items = iconCategoryList.map { it.category },
+                    selectedItem = category,
+                    onItemSelected = { category = it }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                DropdownMenuComponent(
+                    label = "Frequency",
+                    items = frequencyList.map { it.category },
+                    selectedItem = frequency,
+                    onItemSelected = { frequency = it }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {
-                        showError = name.isEmpty() || amount.isEmpty() || date == "Select Date"
+                        showError =
+                            name.isEmpty() || amount.isEmpty() || date == "Select Date" || category.isEmpty() || frequency.isEmpty()
                         val amountDouble = amount.toDoubleOrNull()
                         if (!showError && amountDouble != null) {
                             transactionUpdateViewModel.updateTransaction(
                                 name,
                                 amount.toDouble(),
                                 date,
-                                transactionEntity
+                                category,
+                                frequency,
+                                transactionEntity.toInt()
                             )
                             name = ""
                             amount = ""

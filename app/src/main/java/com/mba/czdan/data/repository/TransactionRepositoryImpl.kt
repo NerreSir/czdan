@@ -24,8 +24,10 @@ class TransactionRepositoryImpl @Inject constructor(
         userName: String,
         amount: Double,
         date: String,
+        category: String,
+        frequency: String,
         id: Int
     ) {
-        return transactionDao.getUpdateTransactionById(userName, amount, date, id)
+        transactionDao.getUpdateTransactionById(userName, amount, date, category, frequency, id)
     }
 }

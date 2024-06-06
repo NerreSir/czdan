@@ -9,5 +9,7 @@ data class TransactionEntity(
     val name: String,
     val amount: Double,
     val date: String,
+    val category: String,
+    val frequency: String,
     val inOutComeControl: Boolean
 )
