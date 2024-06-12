@@ -3,12 +3,15 @@ package com.mba.czdan.ui.screens
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenuItem
@@ -19,7 +22,9 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -28,14 +33,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mba.czdan.data.model.DropdownMenuItemInterface
 import com.mba.czdan.data.model.frequencyList
 import com.mba.czdan.data.model.iconCategoryList
 import com.mba.czdan.ui.theme.topBarGradient
@@ -84,6 +92,7 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, inOutComeContr
     var date by remember { mutableStateOf("Please Click Icon") }
     var category by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf("") }
+    var timePeriod by remember { mutableStateOf("") }
 
     val context = LocalContext.current
 
@@ -130,7 +139,7 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, inOutComeContr
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = date,
-                onValueChange = {},
+                onValueChange = { },
                 label = { Text("Date") },
                 readOnly = true,
                 isError = showError && date == "Please Click Icon",
@@ -147,16 +156,18 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, inOutComeContr
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            DropdownMenuComponent(
+
+            CustomExposedDropdownMenuComponent(
                 label = "Category",
-                items = iconCategoryList.map { it.category },
+                items = iconCategoryList.map { it },
                 selectedItem = category,
                 onItemSelected = { category = it }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            DropdownMenuComponent(
+
+            CustomExposedDropdownMenuComponent(
                 label = "Frequency",
-                items = frequencyList.map { it.category },
+                items = frequencyList.map { it },
                 selectedItem = frequency,
                 onItemSelected = { frequency = it }
             )
@@ -237,36 +248,61 @@ fun ShowDatePickerDialog(
     }.show()
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownMenuComponent(
+fun <T : DropdownMenuItemInterface> CustomExposedDropdownMenuComponent(
     label: String,
-    items: List<String>,
+    items: List<T>,
     selectedItem: String,
     onItemSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf(selectedItem) }
 
-    Column {
-        Text(text = label)
-        Box {
-            Text(
-                text = selectedItem.ifEmpty { "Select $label" },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = { expanded = true })
-                    .background(Color.Gray)
-                    .padding(8.dp)
-            )
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                items.forEach { item ->
-                    DropdownMenuItem(onClick = {
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        }
+    ) {
+        OutlinedTextField(
+            value = selectedText.ifEmpty { "Select $label" },
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            items.forEach { item ->
+                DropdownMenuItem(
+                    onClick = {
+                        selectedText = item.displayText
+                        onItemSelected(item.displayText)
                         expanded = false
-                        onItemSelected(item)
-                    }) {
-                        Text(text = item)
+                    }
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = item.displayText)
+                        item.iconRes?.let {
+                            Icon(
+                                painter = painterResource(id = it),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -302,3 +338,5 @@ fun CustomTabs(selectedIndex: Int, tabTitles: List<String>, onTabSelected: (Int)
         }
     }
 }
+
+

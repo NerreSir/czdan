@@ -23,17 +23,6 @@ object DatabaseModule {
         ).build()
     }
 
-/*
-    //GPT KODU->
-    fun provideDatabase(appContext: Context): AppDatabase {
-        return Room.databaseBuilder(
-            appContext,
-            AppDatabase::class.java,
-            "transaction_db"
-        ).fallbackToDestructiveMigration().build()
-    }
-
- */
 
     @Provides
     fun provideTransactionDao(database: AppDatabase): TransactionDao {

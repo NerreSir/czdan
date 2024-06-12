@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -39,6 +40,7 @@ import com.mba.czdan.data.model.iconCategoryList
 import com.mba.czdan.ui.viewmodel.TransactionUpdateViewModel
 import java.util.Calendar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionUpdateScreen(
     transactionEntity: String,
@@ -127,16 +129,16 @@ fun TransactionUpdateScreen(
                     }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                DropdownMenuComponent(
+                CustomExposedDropdownMenuComponent(
                     label = "Category",
-                    items = iconCategoryList.map { it.category },
+                    items = iconCategoryList.map { it },
                     selectedItem = category,
                     onItemSelected = { category = it }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                DropdownMenuComponent(
+                CustomExposedDropdownMenuComponent(
                     label = "Frequency",
-                    items = frequencyList.map { it.category },
+                    items = frequencyList.map { it },
                     selectedItem = frequency,
                     onItemSelected = { frequency = it }
                 )
