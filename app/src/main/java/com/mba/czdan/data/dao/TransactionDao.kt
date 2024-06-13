@@ -18,13 +18,14 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE id = :transactionId")
     suspend fun getTransactionById(transactionId: Int): TransactionEntity
 
-    @Query("UPDATE transactions SET name = :userName,amount = :amount,date = :date, category = :category, frequency = :frequency WHERE id = :id")
+    @Query("UPDATE transactions SET name = :userName,amount = :amount,date = :date, category = :category, frequency = :frequency,period = :period WHERE id = :id")
     suspend fun getUpdateTransactionById(
         userName: String,
         amount: Double,
         date: String,
         category: String,
         frequency: String,
+        period: Int,
         id: Int
     )
 

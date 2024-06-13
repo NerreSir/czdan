@@ -14,6 +14,7 @@ interface TransactionRepository {
         date: String,
         category: String,
         frequency: String,
+        period: Int,
         id: Int
     )
 }

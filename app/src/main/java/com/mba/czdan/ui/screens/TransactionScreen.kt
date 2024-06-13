@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
@@ -29,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,13 +72,13 @@ fun TransactionScreen(
                 onTabSelected = { selectedTab = it }
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
         Column(
             modifier = Modifier
                 .padding(all = 16.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(color = Color.White)
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
         ) {
             if (selectedTab == 0) {
                 IncomeEntryScreen(transactionViewModel, true)
@@ -92,12 +96,17 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, inOutComeContr
     var date by remember { mutableStateOf("Please Click Icon") }
     var category by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf("") }
-    var timePeriod by remember { mutableStateOf("") }
+    var period by remember { mutableStateOf(TextFieldValue("")) }
 
     val context = LocalContext.current
 
     var showError by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
+    var showPeriod by remember { mutableStateOf(true) }
+
+    LaunchedEffect(frequency) {
+        showPeriod = frequency != "Tek Seferlik"
+    }
 
     Column(
         modifier = Modifier
@@ -156,27 +165,54 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, inOutComeContr
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
-
             CustomExposedDropdownMenuComponent(
+                modifier = Modifier,
                 label = "Category",
                 items = iconCategoryList.map { it },
                 selectedItem = category,
-                onItemSelected = { category = it }
+                onItemSelected = { category = it },
+                isError = showError && category.isEmpty()
             )
             Spacer(modifier = Modifier.height(8.dp))
-
-            CustomExposedDropdownMenuComponent(
-                label = "Frequency",
-                items = frequencyList.map { it },
-                selectedItem = frequency,
-                onItemSelected = { frequency = it }
-            )
+            Column(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier,
+                ) {
+                    Row(modifier = Modifier.weight(5f)) {
+                        CustomExposedDropdownMenuComponent(
+                            label = "Frequency",
+                            items = frequencyList.map { it },
+                            selectedItem = frequency,
+                            onItemSelected = { frequency = it },
+                            isError = showError && frequency.isEmpty()
+                        )
+                    }
+                    if (showPeriod) {
+                        Row(modifier = Modifier.weight(2f)) {
+                            OutlinedTextField(
+                                value = period,
+                                onValueChange = {
+                                    if (it.text.all { char -> char.isDigit() || char == '.' }) {
+                                        period = it
+                                    }
+                                },
+                                label = { Text("Period") },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                isError = showError && period.text.isEmpty(),
+                                modifier = Modifier.fillMaxWidth(),
+                                maxLines = 1,
+                            )
+                        }
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
                     showError =
                         name.isEmpty() || amount.text.isEmpty() || date == "Please Click Icon" || category.isEmpty() || frequency.isEmpty()
                     val amountDouble = amount.text.toDoubleOrNull()
+                    val periodInt = period.text.toIntOrNull()
                     if (!showError && amountDouble != null) {
                         transactionViewModel.addTransaction(
                             name,
@@ -184,11 +220,15 @@ fun IncomeEntryScreen(transactionViewModel: TransactionViewModel, inOutComeContr
                             date,
                             category,
                             frequency,
+                            periodInt,
                             inOutComeControl
                         )
                         name = ""
                         amount = TextFieldValue("")
                         date = "Please Click Icon"
+                        category = ""
+                        frequency = ""
+                        period = TextFieldValue("")
                         Toast.makeText(
                             context,
                             "İşleminiz başarıyla gerçekleşmiştir",
@@ -254,7 +294,9 @@ fun <T : DropdownMenuItemInterface> CustomExposedDropdownMenuComponent(
     label: String,
     items: List<T>,
     selectedItem: String,
-    onItemSelected: (String) -> Unit
+    onItemSelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    isError: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(selectedItem) }
@@ -276,7 +318,9 @@ fun <T : DropdownMenuItemInterface> CustomExposedDropdownMenuComponent(
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
             modifier = Modifier
                 .menuAnchor()
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            maxLines = 1,
+            isError = isError
         )
         ExposedDropdownMenu(
             expanded = expanded,

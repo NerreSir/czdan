@@ -92,4 +92,6 @@ dependencies {
     implementation ("androidx.compose.material:material:1.4.1")
     //JSON CONVERTER
     implementation("org.jsoup:jsoup:1.14.3")
+    //Number Picker
+    implementation ("com.chargemap.compose:numberpicker:1.0.3")
 }

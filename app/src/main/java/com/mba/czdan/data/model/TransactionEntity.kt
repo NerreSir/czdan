@@ -11,5 +11,6 @@ data class TransactionEntity(
     val date: String,
     val category: String,
     val frequency: String,
+    val period: Int?,
     val inOutComeControl: Boolean
 )

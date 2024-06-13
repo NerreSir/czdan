@@ -25,6 +25,7 @@ class TransactionViewModel @Inject constructor(
         date: String,
         category: String,
         frequency: String,
+        period: Int?,
         inOutComeControl: Boolean
     ) {
         val newTransaction = TransactionEntity(
@@ -33,6 +34,7 @@ class TransactionViewModel @Inject constructor(
             date = date,
             category = category,
             frequency = frequency,
+            period = period,
             inOutComeControl = inOutComeControl
         )
         viewModelScope.launch {

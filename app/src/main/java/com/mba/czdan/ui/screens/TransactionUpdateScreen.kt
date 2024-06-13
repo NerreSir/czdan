@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,7 +55,7 @@ fun TransactionUpdateScreen(
     val transactionDate by transactionUpdateViewModel.transactionDate.collectAsState()
     val transactionCategory by transactionUpdateViewModel.transactionCategory.collectAsState()
     val transactionFrequency by transactionUpdateViewModel.transactionFrequency.collectAsState()
-
+    val transactionPeriod by transactionUpdateViewModel.transactionPeriod.collectAsState()
 
     val context = LocalContext.current
 
@@ -68,7 +69,7 @@ fun TransactionUpdateScreen(
         var date by remember { mutableStateOf(transactionDate ?: "Please Click Icon") }
         var category by remember { mutableStateOf(transactionCategory ?: "") }
         var frequency by remember { mutableStateOf(transactionFrequency ?: "") }
-
+        var period by remember { mutableStateOf(transactionPeriod?.toString() ?: "") }
 
         Column(
             modifier = Modifier
@@ -136,30 +137,60 @@ fun TransactionUpdateScreen(
                     onItemSelected = { category = it }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                CustomExposedDropdownMenuComponent(
-                    label = "Frequency",
-                    items = frequencyList.map { it },
-                    selectedItem = frequency,
-                    onItemSelected = { frequency = it }
-                )
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier,
+                    ) {
+                        Row(modifier = Modifier.weight(5f)) {
+                            CustomExposedDropdownMenuComponent(
+                                label = "Frequency",
+                                items = frequencyList.map { it },
+                                selectedItem = frequency,
+                                onItemSelected = { frequency = it }
+                            )
+                        }
+                        if (frequency != "Tek Seferlik") {
+                            Row(modifier = Modifier.weight(2f)) {
+                                OutlinedTextField(
+                                    value = period,
+                                    onValueChange = {
+                                        if (it.all { char -> char.isDigit() || char == '.' }) {
+                                            period = it
+                                        }
+                                    },
+                                    label = { Text("Period") },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    isError = showError && period.isEmpty(),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    maxLines = 1,
+                                )
+                            }
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {
                         showError =
-                            name.isEmpty() || amount.isEmpty() || date == "Select Date" || category.isEmpty() || frequency.isEmpty()
+                            name.isEmpty() || amount.isEmpty() || date == "Select Date" || category.isEmpty() || frequency.isEmpty() || (frequency != "Tek Seferlik" && period.isEmpty())
                         val amountDouble = amount.toDoubleOrNull()
+                        val periodInt = period.toIntOrNull()
                         if (!showError && amountDouble != null) {
                             transactionUpdateViewModel.updateTransaction(
                                 name,
-                                amount.toDouble(),
+                                amountDouble,
                                 date,
                                 category,
                                 frequency,
+                                periodInt ?: 0,
                                 transactionEntity.toInt()
                             )
                             name = ""
                             amount = ""
                             date = "Select Date"
+                            category = ""
+                            frequency = ""
+                            period = ""
                             Toast.makeText(
                                 context,
                                 "İşleminiz başarıyla gerçekleşmiştir",
