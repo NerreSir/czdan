@@ -23,7 +23,7 @@ fun NavGraph(navController: NavHostController, modifier: Modifier) {
             CalendarScreen()
         }
         composable(BottomNavItem.Flow.route) {
-            FlowScreen()
+            FlowScreen(navController)
         }
         composable(BottomNavItem.Transaction.route) {
             TransactionScreen()

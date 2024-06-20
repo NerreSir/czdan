@@ -31,6 +31,9 @@ class TransactionUpdateViewModel @Inject constructor(
     private val _transactionPeriod = MutableStateFlow<Int?>(null)
     val transactionPeriod: MutableStateFlow<Int?> = _transactionPeriod
 
+    private val _transactionInOutComeControl = MutableStateFlow<Boolean>(false)
+
+
     fun getTransaction(transactionId: String) {
         viewModelScope.launch {
             repository.getTransactionById(transactionId.toInt())?.let {
@@ -40,6 +43,7 @@ class TransactionUpdateViewModel @Inject constructor(
                 _transactionCategory.value = it.category
                 _transactionFrequency.value = it.frequency
                 _transactionPeriod.value = it.period
+                _transactionInOutComeControl.value = it.inOutComeControl
             }
         }
     }
@@ -61,7 +65,8 @@ class TransactionUpdateViewModel @Inject constructor(
                 category = category,
                 frequency = frequency,
                 period = period,
-                id = id
+                id = id,
+                _transactionInOutComeControl.value
             )
         }
     }

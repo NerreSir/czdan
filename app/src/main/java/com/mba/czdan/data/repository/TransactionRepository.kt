@@ -5,9 +5,7 @@ import com.mba.czdan.data.model.TransactionEntity
 interface TransactionRepository {
     suspend fun insertTransaction(transaction: TransactionEntity)
     suspend fun getAllTransactions(): List<TransactionEntity>
-
     suspend fun getTransactionById(id: Int): TransactionEntity?
-
     suspend fun getUpdateTransactionById(
         userName: String,
         amount: Double,
@@ -15,6 +13,9 @@ interface TransactionRepository {
         category: String,
         frequency: String,
         period: Int,
-        id: Int
-    )
+        id: Int,
+        inOutComeControl: Boolean,
+        )
+
+    suspend fun deleteTransaction(transaction: TransactionEntity)
 }

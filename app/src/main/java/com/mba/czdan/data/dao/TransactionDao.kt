@@ -1,6 +1,7 @@
 package com.mba.czdan.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -18,7 +19,7 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE id = :transactionId")
     suspend fun getTransactionById(transactionId: Int): TransactionEntity
 
-    @Query("UPDATE transactions SET name = :userName,amount = :amount,date = :date, category = :category, frequency = :frequency,period = :period WHERE id = :id")
+    @Query("UPDATE transactions SET name = :userName,amount = :amount,date = :date, category = :category, frequency = :frequency,period = :period,inOutComeControl = :inOutComeControl WHERE id = :id")
     suspend fun getUpdateTransactionById(
         userName: String,
         amount: Double,
@@ -26,8 +27,10 @@ interface TransactionDao {
         category: String,
         frequency: String,
         period: Int,
-        id: Int
-    )
+        id: Int,
+        inOutComeControl: Boolean,
+        )
 
-
+    @Delete
+    suspend fun deleteTransaction(transaction: TransactionEntity)
 }

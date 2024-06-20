@@ -161,7 +161,9 @@ fun TransactionUpdateScreen(
                                     label = { Text("Period") },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                     isError = showError && period.isEmpty(),
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 4.dp),
                                     maxLines = 1,
                                 )
                             }

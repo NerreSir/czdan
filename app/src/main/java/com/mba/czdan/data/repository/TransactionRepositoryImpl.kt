@@ -27,8 +27,22 @@ class TransactionRepositoryImpl @Inject constructor(
         category: String,
         frequency: String,
         period: Int,
-        id: Int
-    ) {
-        transactionDao.getUpdateTransactionById(userName, amount, date, category, frequency,period, id)
+        id: Int,
+        inOutComeControl: Boolean,
+        ) {
+        transactionDao.getUpdateTransactionById(
+            userName,
+            amount,
+            date,
+            category,
+            frequency,
+            period,
+            id,
+            inOutComeControl,
+        )
+    }
+
+    override suspend fun deleteTransaction(transaction: TransactionEntity) {
+        transactionDao.deleteTransaction(transaction)
     }
 }
